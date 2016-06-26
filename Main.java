@@ -1,163 +1,210 @@
-
-
-//This is a sample program to solve the linear equations.
-import java.util.Scanner;
+import javax.swing.*;
+import java.awt.event.*;
  
-public class Solve_Linear_Equation 
+ 
+class Calc implements ActionListener
 {
-    public static void main(String args[])
-    {
-        char []var = {'x', 'y', 'z', 'w'};
-        System.out.println("Enter the number of variables in the equations: ");
-        Scanner input = new Scanner(System.in);
-        int n = input.nextInt();
-        System.out.println("Enter the coefficients of each variable for each equations");
-        System.out.println("ax + by + cz + ... = d");
-        double [][]mat = new double[n][n];
-        double [][]constants = new double[n][1];
-        //input
-        for(int i=0; i<n; i++)
-        {
-            for(int j=0; j<n; j++)
-            {
-                mat[i][j] = input.nextDouble();
-            }
-            constants[i][0] = input.nextDouble();
-        }
-        //Matrix representation
-        for(int i=0; i<n; i++)
-        {
-            for(int j=0; j<n; j++)
-            {
-                System.out.print(" "+mat[i][j]);
-            }
-            System.out.print("  "+ var[i]);
-            System.out.print("  =  "+ constants[i][0]);
-            System.out.println();
-        }
-        //inverse of matrix mat[][]
-        double inverted_mat[][] = invert(mat);
-        System.out.println("The inverse is: ");
-        for (int i=0; i<n; ++i) 
-        {
-            for (int j=0; j<n; ++j)
-            {
-                System.out.print(inverted_mat[i][j]+"  ");
-            }
-            System.out.println();
-        }
-        //Multiplication of mat inverse and constants
-        double result[][] = new double[n][1];
-        for (int i = 0; i < n; i++) 
-        {
-            for (int j = 0; j < 1; j++) 
-            {
-                for (int k = 0; k < n; k++)
-                {	 
-                    result[i][j] = result[i][j] + inverted_mat[i][k] * constants[k][j];
-                }
-            }
-        }
-        System.out.println("The product is:");
-        for(int i=0; i<n; i++)
-        {
-            System.out.println(result[i][0] + " ");
-        }
-        input.close();
+    JFrame f;
+    JTextField t;
+    JButton b1,b2,b3,b4,b5,b6,b7,b8,b9,b0,bdiv,bmul,bsub,badd,bdec,beq,bdel,bclr;
  
+    static double a=0,b=0,result=0;
+    static int operator=0;
+ 
+    Calc()
+    {
+        f=new JFrame("Calculator");
+        t=new JTextField();
+        b1=new JButton("1");
+        b2=new JButton("2");
+        b3=new JButton("3");
+        b4=new JButton("4");
+        b5=new JButton("5");
+        b6=new JButton("6");
+        b7=new JButton("7");
+        b8=new JButton("8");
+        b9=new JButton("9");
+        b0=new JButton("0");
+        bdiv=new JButton("/");
+        bmul=new JButton("*");
+        bsub=new JButton("-");
+        badd=new JButton("+");
+        bdec=new JButton(".");
+        beq=new JButton("=");
+        bdel=new JButton("Delete");
+        bclr=new JButton("Clear");
+        
+        t.setBounds(30,40,280,30);
+        b7.setBounds(40,100,50,40);
+        b8.setBounds(110,100,50,40);
+        b9.setBounds(180,100,50,40);
+        bdiv.setBounds(250,100,50,40);
+        
+        b4.setBounds(40,170,50,40);
+        b5.setBounds(110,170,50,40);
+        b6.setBounds(180,170,50,40);
+        bmul.setBounds(250,170,50,40);
+        
+        b1.setBounds(40,240,50,40);
+        b2.setBounds(110,240,50,40);
+        b3.setBounds(180,240,50,40);
+        bsub.setBounds(250,240,50,40);
+        
+        bdec.setBounds(40,310,50,40);
+        b0.setBounds(110,310,50,40);
+        beq.setBounds(180,310,50,40);
+        badd.setBounds(250,310,50,40);
+        
+        bdel.setBounds(60,380,100,40);
+        bclr.setBounds(180,380,100,40);
+        
+        f.add(t);
+        f.add(b7);
+        f.add(b8);
+        f.add(b9);
+        f.add(bdiv);
+        f.add(b4);
+        f.add(b5);
+        f.add(b6);
+        f.add(bmul);
+        f.add(b1);
+        f.add(b2);
+        f.add(b3);
+        f.add(bsub);
+        f.add(bdec);
+        f.add(b0);
+        f.add(beq);
+        f.add(badd);
+        f.add(bdel);
+        f.add(bclr);
+        
+        f.setLayout(null);
+        f.setVisible(true);
+        f.setSize(350,500);
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.setResizable(false);
+        
+        b1.addActionListener(this);
+        b2.addActionListener(this);
+        b3.addActionListener(this);
+        b4.addActionListener(this);
+        b5.addActionListener(this);
+        b6.addActionListener(this);
+        b7.addActionListener(this);
+        b8.addActionListener(this);
+        b9.addActionListener(this);
+        b0.addActionListener(this);
+        badd.addActionListener(this);
+        bdiv.addActionListener(this);
+        bmul.addActionListener(this);
+        bsub.addActionListener(this);
+        bdec.addActionListener(this);
+        beq.addActionListener(this);
+        bdel.addActionListener(this);
+        bclr.addActionListener(this);
     }
  
-    public static double[][] invert(double a[][]) 
+    public void actionPerformed(ActionEvent e)
     {
-        int n = a.length;
-        double x[][] = new double[n][n];
-        double b[][] = new double[n][n];
-        int index[] = new int[n];
-        for (int i=0; i<n; ++i) 
-            b[i][i] = 1;
- 
- // Transform the matrix into an upper triangle
-        gaussian(a, index);
- 
- // Update the matrix b[i][j] with the ratios stored
-        for (int i=0; i<n-1; ++i)
-            for (int j=i+1; j<n; ++j)
-                for (int k=0; k<n; ++k)
-                    b[index[j]][k]
-                    	    -= a[index[j]][i]*b[index[i]][k];
- 
- // Perform backward substitutions
-        for (int i=0; i<n; ++i) 
+        if(e.getSource()==b1)
+            t.setText(t.getText().concat("1"));
+        
+        if(e.getSource()==b2)
+            t.setText(t.getText().concat("2"));
+        
+        if(e.getSource()==b3)
+            t.setText(t.getText().concat("3"));
+        
+        if(e.getSource()==b4)
+            t.setText(t.getText().concat("4"));
+        
+        if(e.getSource()==b5)
+            t.setText(t.getText().concat("5"));
+        
+        if(e.getSource()==b6)
+            t.setText(t.getText().concat("6"));
+        
+        if(e.getSource()==b7)
+            t.setText(t.getText().concat("7"));
+        
+        if(e.getSource()==b8)
+            t.setText(t.getText().concat("8"));
+        
+        if(e.getSource()==b9)
+            t.setText(t.getText().concat("9"));
+        
+        if(e.getSource()==b0)
+            t.setText(t.getText().concat("0"));
+        
+        if(e.getSource()==bdec)
+            t.setText(t.getText().concat("."));
+        
+        if(e.getSource()==badd)
         {
-            x[n-1][i] = b[index[n-1]][i]/a[index[n-1]][n-1];
-            for (int j=n-2; j>=0; --j) 
-            {
-                x[j][i] = b[index[j]][i];
-                for (int k=j+1; k<n; ++k) 
-                {
-                    x[j][i] -= a[index[j]][k]*x[k][i];
-                }
-                x[j][i] /= a[index[j]][j];
-            }
+            a=Double.parseDouble(t.getText());
+            operator=1;
+            t.setText("");
+        } 
+        
+        if(e.getSource()==bsub)
+        {
+            a=Double.parseDouble(t.getText());
+            operator=2;
+            t.setText("");
         }
-        return x;
+        
+        if(e.getSource()==bmul)
+        {
+            a=Double.parseDouble(t.getText());
+            operator=3;
+            t.setText("");
+        }
+        
+        if(e.getSource()==bdiv)
+        {
+            a=Double.parseDouble(t.getText());
+            operator=4;
+            t.setText("");
+        }
+        
+        if(e.getSource()==beq)
+        {
+            b=Double.parseDouble(t.getText());
+        
+            switch(operator)
+            {
+                case 1: result=a+b;
+                    break;
+        
+                case 2: result=a-b;
+                    break;
+        
+                case 3: result=a*b;
+                    break;
+        
+                case 4: result=a/b;
+                    break;
+        
+                default: result=0;
+            }
+        
+            t.setText(""+result);
+        }
+        
+        if(e.getSource()==bclr)
+            t.setText("");
+        
+        if(e.getSource()==bdel)
+        {
+            String s=t.getText();
+            t.setText("");
+            for(int i=0;i<s.length()-1;i++)
+            t.setText(t.getText()+s.charAt(i));
+        }        
     }
  
-// Method to carry out the partial-pivoting Gaussian
-// elimination.  Here index[] stores pivoting order.
- 
-    public static void gaussian(double a[][], int index[]) 
+    public static void main(String...s)
     {
-        int n = index.length;
-        double c[] = new double[n];
- 
- // Initialize the index
-        for (int i=0; i<n; ++i) 
-            index[i] = i;
- 
- // Find the rescaling factors, one from each row
-        for (int i=0; i<n; ++i) 
-        {
-            double c1 = 0;
-            for (int j=0; j<n; ++j) 
-            {
-                double c0 = Math.abs(a[i][j]);
-                if (c0 > c1) c1 = c0;
-            }
-            c[i] = c1;
-        }
- 
- // Search the pivoting element from each column
-        int k = 0;
-        for (int j=0; j<n-1; ++j) 
-        {
-            double pi1 = 0;
-            for (int i=j; i<n; ++i) 
-            {
-                double pi0 = Math.abs(a[index[i]][j]);
-                pi0 /= c[index[i]];
-                if (pi0 > pi1) 
-                {
-                    pi1 = pi0;
-                    k = i;
-                }
-            }
- 
-   // Interchange rows according to the pivoting order
-            int itmp = index[j];
-            index[j] = index[k];
-            index[k] = itmp;
-            for (int i=j+1; i<n; ++i) 	
-            {
-                double pj = a[index[i]][j]/a[index[j]][j];
- 
- // Record pivoting ratios below the diagonal
-                a[index[i]][j] = pj;
- 
- // Modify other elements accordingly
-                for (int l=j+1; l<n; ++l)
-                    a[index[i]][l] -= pj*a[index[j]][l];
-            }
-        }
+        new Calc();
     }
 }
