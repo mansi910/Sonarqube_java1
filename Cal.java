@@ -117,8 +117,8 @@ implements ActionListener
 			t1.setText("");
 		}
 	}
-    public static void main(String...s)
+    public static void main(String args[])
     {
-        new Calc();
+        System.out.println("hello ");
     }
 }
