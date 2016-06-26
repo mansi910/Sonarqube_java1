@@ -7,7 +7,7 @@ import java.applet.*;
 </applet>
 */
  
-public class Main extends Applet
+public class Cal extends Applet
 implements ActionListener
 {
 	String msg=" ";
