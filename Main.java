@@ -1,227 +1,163 @@
 
 
+//This is a sample program to solve the linear equations.
 import java.util.Scanner;
-
-
-public class Calculator {
-
-
- public static void main(String[] args) {
-
-        Scanner kb = new Scanner(System.in);
-
-        System.out.println("Simple Calculator");
-
-        System.out.println("\nHere are your options:");
-        System.out.println("\n1. Addition");
-        System.out.println("2. Subtraction");
-        System.out.println("3. Division");
-        System.out.println("4. Multiplication");
-
-        System.out.print("\nWhat would you like to do?: ");
-        int choice = kb.nextInt();
-        System.out.println();
-
-
-        if (choice == 1){
-            addition();
+ 
+public class Solve_Linear_Equation 
+{
+    public static void main(String args[])
+    {
+        char []var = {'x', 'y', 'z', 'w'};
+        System.out.println("Enter the number of variables in the equations: ");
+        Scanner input = new Scanner(System.in);
+        int n = input.nextInt();
+        System.out.println("Enter the coefficients of each variable for each equations");
+        System.out.println("ax + by + cz + ... = d");
+        double [][]mat = new double[n][n];
+        double [][]constants = new double[n][1];
+        //input
+        for(int i=0; i<n; i++)
+        {
+            for(int j=0; j<n; j++)
+            {
+                mat[i][j] = input.nextDouble();
+            }
+            constants[i][0] = input.nextDouble();
         }
-        else if (choice == 2){
-            subtraction();
+        //Matrix representation
+        for(int i=0; i<n; i++)
+        {
+            for(int j=0; j<n; j++)
+            {
+                System.out.print(" "+mat[i][j]);
+            }
+            System.out.print("  "+ var[i]);
+            System.out.print("  =  "+ constants[i][0]);
+            System.out.println();
         }
-        else if (choice == 3){
-            division();
+        //inverse of matrix mat[][]
+        double inverted_mat[][] = invert(mat);
+        System.out.println("The inverse is: ");
+        for (int i=0; i<n; ++i) 
+        {
+            for (int j=0; j<n; ++j)
+            {
+                System.out.print(inverted_mat[i][j]+"  ");
+            }
+            System.out.println();
         }
-        else if (choice == 4){
-            multiplication();
+        //Multiplication of mat inverse and constants
+        double result[][] = new double[n][1];
+        for (int i = 0; i < n; i++) 
+        {
+            for (int j = 0; j < 1; j++) 
+            {
+                for (int k = 0; k < n; k++)
+                {	 
+                    result[i][j] = result[i][j] + inverted_mat[i][k] * constants[k][j];
+                }
+            }
         }
-
-        System.out.println();
-        kb.close();
+        System.out.println("The product is:");
+        for(int i=0; i<n; i++)
+        {
+            System.out.println(result[i][0] + " ");
+        }
+        input.close();
+ 
     }
-
-    public static void addition(){
-
-        int nOne, nTwo;
-        Scanner kb = new Scanner(System.in);
-
-        System.out.println("Addition");
-
-        System.out.print("\nFirst Number: ");
-        nOne = kb.nextInt();
-
-        System.out.print("\nSecond Number: ");
-        nTwo = kb.nextInt();
-
-        kb.close();
-        System.out.println("\nSum: " + nOne + " + " + nTwo + " = " + (nOne + nTwo));
+ 
+    public static double[][] invert(double a[][]) 
+    {
+        int n = a.length;
+        double x[][] = new double[n][n];
+        double b[][] = new double[n][n];
+        int index[] = new int[n];
+        for (int i=0; i<n; ++i) 
+            b[i][i] = 1;
+ 
+ // Transform the matrix into an upper triangle
+        gaussian(a, index);
+ 
+ // Update the matrix b[i][j] with the ratios stored
+        for (int i=0; i<n-1; ++i)
+            for (int j=i+1; j<n; ++j)
+                for (int k=0; k<n; ++k)
+                    b[index[j]][k]
+                    	    -= a[index[j]][i]*b[index[i]][k];
+ 
+ // Perform backward substitutions
+        for (int i=0; i<n; ++i) 
+        {
+            x[n-1][i] = b[index[n-1]][i]/a[index[n-1]][n-1];
+            for (int j=n-2; j>=0; --j) 
+            {
+                x[j][i] = b[index[j]][i];
+                for (int k=j+1; k<n; ++k) 
+                {
+                    x[j][i] -= a[index[j]][k]*x[k][i];
+                }
+                x[j][i] /= a[index[j]][j];
+            }
+        }
+        return x;
     }
-
-    public static void subtraction(){
-        int nOne, nTwo;
-        Scanner kb = new Scanner(System.in);
-
-        System.out.println("Subtraction");
-
-        System.out.print("\nFirst Number: ");
-        nOne = kb.nextInt();
-
-        System.out.print("\nSecond Number: ");
-        nTwo = kb.nextInt();
-
-        kb.close();
-        System.out.println("\nSum: " + nOne + " - " + nTwo + " = " + (nOne - nTwo));
-    }
-
-    public static void division(){
-        int nOne, nTwo;
-        Scanner kb = new Scanner(System.in);
-
-        System.out.println("Division");
-
-        System.out.print("\nFirst Number: ");
-        nOne = kb.nextInt();
-
-        System.out.print("\nSecond Number: ");
-        nTwo = kb.nextInt();
-
-        kb.close();
-        System.out.println("\nSum: " + nOne + " / " + nTwo + " = " + (nOne / nTwo));
-    }
-
-    public static void multiplication(){
-        int nOne, nTwo;
-        Scanner kb = new Scanner(System.in);
-
-        System.out.println("Multiplication");
-
-        System.out.print("\nFirst Number: ");
-        nOne = kb.nextInt();
-
-        System.out.print("\nSecond Number: ");
-        nTwo = kb.nextInt();
-
-        kb.close();
-        System.out.println("\nSum: " + nOne + " x " + nTwo + " = " + (nOne * nTwo));
+ 
+// Method to carry out the partial-pivoting Gaussian
+// elimination.  Here index[] stores pivoting order.
+ 
+    public static void gaussian(double a[][], int index[]) 
+    {
+        int n = index.length;
+        double c[] = new double[n];
+ 
+ // Initialize the index
+        for (int i=0; i<n; ++i) 
+            index[i] = i;
+ 
+ // Find the rescaling factors, one from each row
+        for (int i=0; i<n; ++i) 
+        {
+            double c1 = 0;
+            for (int j=0; j<n; ++j) 
+            {
+                double c0 = Math.abs(a[i][j]);
+                if (c0 > c1) c1 = c0;
+            }
+            c[i] = c1;
+        }
+ 
+ // Search the pivoting element from each column
+        int k = 0;
+        for (int j=0; j<n-1; ++j) 
+        {
+            double pi1 = 0;
+            for (int i=j; i<n; ++i) 
+            {
+                double pi0 = Math.abs(a[index[i]][j]);
+                pi0 /= c[index[i]];
+                if (pi0 > pi1) 
+                {
+                    pi1 = pi0;
+                    k = i;
+                }
+            }
+ 
+   // Interchange rows according to the pivoting order
+            int itmp = index[j];
+            index[j] = index[k];
+            index[k] = itmp;
+            for (int i=j+1; i<n; ++i) 	
+            {
+                double pj = a[index[i]][j]/a[index[j]][j];
+ 
+ // Record pivoting ratios below the diagonal
+                a[index[i]][j] = pj;
+ 
+ // Modify other elements accordingly
+                for (int l=j+1; l<n; ++l)
+                    a[index[i]][l] -= pj*a[index[j]][l];
+            }
+        }
     }
 }
-
-import java.awt.*;
-import java.awt.event.*;
-import java.applet.*;
- 
-/* 
-<applet code="Cal" width=300 height=300>
-</applet>
-*/
- 
-public class Cal extends Applet
-implements ActionListener
-{
-	String msg=" ";
-	int v1,v2,result;
-	TextField t1;
-	Button b[]=new Button[10];
-	Button add,sub,mul,div,clear,mod,EQ;
-	char OP;
-	public void init()
-	{
-		Color k=new Color(120,89,90);
-		setBackground(k);
-		t1=new TextField(10);
-		GridLayout gl=new GridLayout(4,5);
-		setLayout(gl);
-		for(int i=0;i<10;i++)
-		{
-			b[i]=new Button(""+i);
-		}
-		add=new Button("add");
-		sub=new Button("sub");
-		mul=new Button("mul");
-		div=new Button("div");
-		mod=new Button("mod");
-		clear=new Button("clear");
-		EQ=new Button("EQ");
-		t1.addActionListener(this);
-		add(t1);
-		for(int i=0;i<10;i++)
-		{
-			add(b[i]);
-		}
-		add(add);
-		add(sub);
-		add(mul);
-		add(div);
-		add(mod);
-		add(clear);
-		add(EQ);
-		for(int i=0;i<10;i++)
-		{
-			b[i].addActionListener(this);
-		}
-		add.addActionListener(this);
-		sub.addActionListener(this);
-		mul.addActionListener(this);
-		div.addActionListener(this);
-		mod.addActionListener(this);
-		clear.addActionListener(this);
-		EQ.addActionListener(this);
-	}
- 
-	public void actionPerformed(ActionEvent ae)
-	{
-		String str=ae.getActionCommand();
-		char ch=str.charAt(0);
-		if ( Character.isDigit(ch))
-		t1.setText(t1.getText()+str);
-		else
-		if(str.equals("add"))
-		{
-			v1=Integer.parseInt(t1.getText());
-			OP='+';
-			t1.setText("");
-		}
-		else if(str.equals("sub"))
-		{
-			v1=Integer.parseInt(t1.getText());
-			OP='-';
-			t1.setText("");
-		}
-		else if(str.equals("mul"))
-		{
-			v1=Integer.parseInt(t1.getText());
-			OP='*';
-			t1.setText("");
-		}
-		else if(str.equals("div"))
-		{
-			v1=Integer.parseInt(t1.getText());
-			OP='/';
-			t1.setText("");
-		}
-		else if(str.equals("mod"))
-		{
-			v1=Integer.parseInt(t1.getText());
-			OP='%';
-			t1.setText("");
-		}
-		if(str.equals("EQ"))
-		{
-			v2=Integer.parseInt(t1.getText());
-			if(OP=='+')
-				result=v1+v2;
-			else if(OP=='-')
-				result=v1-v2;
-			else if(OP=='*')
-				result=v1*v2;
-			else if(OP=='/')
-				result=v1/v2;
-			else if(OP=='%')
-				result=v1%v2;
-			t1.setText(""+result);
-		}	
-		if(str.equals("clear"))
-		{
-			t1.setText("");
-		}
-	}
