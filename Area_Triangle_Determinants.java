@@ -1,84 +1,124 @@
-//This is a java program to find the area of triangle using method of determinants
-import java.util.Random;
+import java.awt.*;
+import java.awt.event.*;
+import java.applet.*;
  
-public class Area_Triangle_Determinants
+/* 
+<applet code="Cal" width=300 height=300>
+</applet>
+*/
+ 
+public class Cal extends Applet
+implements ActionListener
 {
-    public static double determinant(double A[][], int N)
+	String msg=" ";
+	int v1,v2,result;
+	TextField t1;
+	Button b[]=new Button[10];
+	Button add,sub,mul,div,clear,mod,EQ;
+	char OP;
+	public void init()
+	{
+		Color k=new Color(120,89,90);
+		setBackground(k);
+		t1=new TextField(10);
+		GridLayout gl=new GridLayout(4,5);
+		setLayout(gl);
+		for(int i=0;i<10;i++)
+		{
+			b[i]=new Button(""+i);
+		}
+		add=new Button("add");
+		sub=new Button("sub");
+		mul=new Button("mul");
+		div=new Button("div");
+		mod=new Button("mod");
+		clear=new Button("clear");
+		EQ=new Button("EQ");
+		t1.addActionListener(this);
+		add(t1);
+		for(int i=0;i<10;i++)
+		{
+			add(b[i]);
+		}
+		add(add);
+		add(sub);
+		add(mul);
+		add(div);
+		add(mod);
+		add(clear);
+		add(EQ);
+		for(int i=0;i<10;i++)
+		{
+			b[i].addActionListener(this);
+		}
+		add.addActionListener(this);
+		sub.addActionListener(this);
+		mul.addActionListener(this);
+		div.addActionListener(this);
+		mod.addActionListener(this);
+		clear.addActionListener(this);
+		EQ.addActionListener(this);
+	}
+ 
+	public void actionPerformed(ActionEvent ae)
+	{
+		String str=ae.getActionCommand();
+		char ch=str.charAt(0);
+		if ( Character.isDigit(ch))
+		t1.setText(t1.getText()+str);
+		else
+		if(str.equals("add"))
+		{
+			v1=Integer.parseInt(t1.getText());
+			OP='+';
+			t1.setText("");
+		}
+		else if(str.equals("sub"))
+		{
+			v1=Integer.parseInt(t1.getText());
+			OP='-';
+			t1.setText("");
+		}
+		else if(str.equals("mul"))
+		{
+			v1=Integer.parseInt(t1.getText());
+			OP='*';
+			t1.setText("");
+		}
+		else if(str.equals("div"))
+		{
+			v1=Integer.parseInt(t1.getText());
+			OP='/';
+			t1.setText("");
+		}
+		else if(str.equals("mod"))
+		{
+			v1=Integer.parseInt(t1.getText());
+			OP='%';
+			t1.setText("");
+		}
+		if(str.equals("EQ"))
+		{
+			v2=Integer.parseInt(t1.getText());
+			if(OP=='+')
+				result=v1+v2;
+			else if(OP=='-')
+				result=v1-v2;
+			else if(OP=='*')
+				result=v1*v2;
+			else if(OP=='/')
+				result=v1/v2;
+			else if(OP=='%')
+				result=v1%v2;
+			t1.setText(""+result);
+		}	
+		if(str.equals("clear"))
+		{
+			t1.setText("");
+		}
+	}
+	
+	public static void main(String...s)
     {
-        double det = 0;
-        if (N == 1)
-        {
-            det = A[0][0];
-        } else if (N == 2)
-        {
-            det = A[0][0] * A[1][1] - A[1][0] * A[0][1];
-        } else
-        {
-            det = 0;
-            for (int j1 = 0; j1 < N; j1++)
-            {
-                double[][] m = new double[N - 1][];
-                for (int k = 0; k < (N - 1); k++)
-                {
-                    m[k] = new double[N - 1];
-                }
-                for (int i = 1; i < N; i++)
-                {
-                    int j2 = 0;
-                    for (int j = 0; j < N; j++)
-                    {
-                        if (j == j1)
-                            continue;
-                        m[i - 1][j2] = A[i][j];
-                        j2++;
-                    }
-                }
-                det += Math.pow(-1.0, 1.0 + j1 + 1.0) * A[0][j1]
-                        * determinant(m, N - 1);
-            }
-        }
-        return det;
+        new Calc();
     }
- 
-    public static void main(String args[])
-    {
-        Random random = new Random();
-        int x1, x2, x3, y1, y2, y3;
-        x1 = random.nextInt(10);
-        x2 = random.nextInt(10);
-        x3 = random.nextInt(10);
-        y1 = random.nextInt(10);
-        y2 = random.nextInt(10);
-        y3 = random.nextInt(10);
- 
-        double[][] mat = new double[3][3];
-        mat[0][0] = x1;
-        mat[0][1] = y1;
-        mat[0][2] = 1;
-        mat[1][0] = x2;
-        mat[1][1] = y2;
-        mat[1][2] = 1;
-        mat[2][0] = x3;
-        mat[2][1] = y3;
-        mat[2][2] = 1;
- 
-        System.out
-                .println("The matrix formed by the coordinates of the triangle is: ");
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < 3; j++)
-                System.out.print(mat[i][j] + " ");
-            System.out.println();
-        }
- 
-        double det = determinant(mat, 3) * 0.5;
-        if (det < 0)
-            System.out.println("The Area of the triangle formed by (" + x1
-                    + "," + y1 + "), (" + x2 + "," + y2 + "), (" + x3 + ","
-                    + y3 + ") = " + (det * -1));
-        else
-            System.out.println("The Area of the triangle formed by (" + x1
-                    + "," + y1 + "), (" + x2 + "," + y2 + "), (" + x3 + ","
-                    + y3 + ") = " + det);
-    }
-}
