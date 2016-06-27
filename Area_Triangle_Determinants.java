@@ -116,9 +116,11 @@ implements ActionListener
 		{
 			t1.setText("");
 		}
+		
 	}
-	
-	public static void main(String...s)
+    public static void main(String...s)
     {
-        new Calc();
+         Calc();
     }
+	
+	
