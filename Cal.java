@@ -1,7 +1,7 @@
 import java.util.Scanner;
 
 
-public class Calculator {
+public class Cal{
 
 
     public static void main(String[] args) {
@@ -103,4 +103,4 @@ public class Calculator {
         System.out.println("\nSum: " + nOne + " x " + nTwo + " = " + (nOne * nTwo));
     }
 }
-java beginner calculator
+
