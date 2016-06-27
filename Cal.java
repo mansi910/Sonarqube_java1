@@ -119,6 +119,6 @@ implements ActionListener
 	}
 	public static void main(String...s)
     {
-        new Calc();
+        new Cal();
     }
 }
